@@ -1,0 +1,40 @@
+name: Build NsoElfConverterDotNet (Windows x64 Release)
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK 3.1.x
+        uses: actions/setup-dotnet@v2
+        with:
+          version: '3.1.x'
+
+      - name: Restore dependencies
+        run: dotnet restore NsoElfConverterDotNet.sln
+
+      - name: Build Release | x64
+        run: |
+          dotnet publish NsoElfConverterDotNet.sln --configuration Release --runtime win-x64 --self-contained false -p:PublishSingleFile=true
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: NsoElfConverterDotNet-Win-x64-Release
+          path: |
+            bin/Release/netcoreapp3.1/win-x64/publish/
+
+# 如果需要生成一个包含所有依赖的单个可执行文件（Self-contained），可以修改上面的 "Build Release | x64" 步骤为：
+# 
+# - name: Build Self-contained Release | x64
+#   run: |
+#     dotnet publish NsoElfConverterDotNet.sln --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true
