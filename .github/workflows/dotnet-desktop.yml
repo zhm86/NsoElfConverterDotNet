@@ -1,10 +1,9 @@
-name: Build NsoElfConverterDotNet (Windows x64 Release)
+name: Build and Release
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   build:
@@ -12,23 +11,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Setup .NET Core SDK 3.1.x
-        uses: actions/setup-dotnet@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
         with:
-          version: '3.1.x'
+          dotnet-version: '6.0.x'  # 选择合适的 .NET 版本
 
       - name: Restore dependencies
-        run: dotnet restore NsoElfConverterDotNet.sln
+        run: dotnet restore NsoElfConverterDotNet/NsoElfConverterDotNet.csproj
 
-      - name: Publish Release | x64
-        run: |
-          dotnet publish NsoElfConverterDotNet.sln --configuration Release --runtime win-x64 --self-contained false -p:PublishSingleFile=true
+      - name: Build project
+        run: dotnet build NsoElfConverterDotNet/NsoElfConverterDotNet.csproj --configuration Release
 
-      # 修改为使用 v2 版本
-      - name: Archive artifacts
+      - name: Publish project
+        run: dotnet publish NsoElfConverterDotNet/NsoElfConverterDotNet.csproj --configuration Release --output ./output
+
+      - name: Upload Release Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: NsoElfConverterDotNet-Win-x64-Release
-          path: bin/Release/netcoreapp3.1/win-x64/publish/
+          name: NsoElfConverter
+          path: ./output
