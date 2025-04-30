@@ -16,19 +16,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'  # 选择合适的 .NET 版本
+          dotnet-version: '3.1.x'  # 使用 .NET Core 3.1
 
       - name: Restore dependencies
-        run: dotnet restore NsoElfConverterDotNet/NsoElfConverterDotNet.csproj
+        run: dotnet restore NsoElfConverterDotNet.Console/NsoElfConverterDotNet.ConsoleApp.csproj
 
       - name: Build project
-        run: dotnet build NsoElfConverterDotNet/NsoElfConverterDotNet.csproj --configuration Release
+        run: dotnet build NsoElfConverterDotNet.Console/NsoElfConverterDotNet.ConsoleApp.csproj --configuration Release
 
       - name: Publish project
-        run: dotnet publish NsoElfConverterDotNet/NsoElfConverterDotNet.csproj --configuration Release --output ./output
+        run: dotnet publish NsoElfConverterDotNet.Console/NsoElfConverterDotNet.ConsoleApp.csproj --configuration Release --output ./output
 
       - name: Upload Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NsoElfConverter
+          name: NsoElfConverterConsole
           path: ./output
