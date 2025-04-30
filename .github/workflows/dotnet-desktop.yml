@@ -22,19 +22,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore NsoElfConverterDotNet.sln
 
-      - name: Build Release | x64
+      - name: Publish Release | x64
         run: |
           dotnet publish NsoElfConverterDotNet.sln --configuration Release --runtime win-x64 --self-contained false -p:PublishSingleFile=true
 
+      # 修改为使用 v2 版本
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: NsoElfConverterDotNet-Win-x64-Release
-          path: |
-            bin/Release/netcoreapp3.1/win-x64/publish/
-
-# 如果需要生成一个包含所有依赖的单个可执行文件（Self-contained），可以修改上面的 "Build Release | x64" 步骤为：
-# 
-# - name: Build Self-contained Release | x64
-#   run: |
-#     dotnet publish NsoElfConverterDotNet.sln --configuration Release --runtime win-x64 --self-contained true -p:PublishSingleFile=true
+          path: bin/Release/netcoreapp3.1/win-x64/publish/
